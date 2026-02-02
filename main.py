@@ -13,6 +13,11 @@ This script orchestrates the entire RSS digest generation process:
 import logging
 import sys
 from datetime import datetime
+from pathlib import Path
+
+# Load .env file if exists (for local development)
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).parent / ".env")
 
 from src.config import get_config
 from src.opml_parser import parse_opml, get_categories
