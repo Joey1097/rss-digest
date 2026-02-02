@@ -1,0 +1,43 @@
+name: Daily RSS Digest
+
+on:
+  schedule:
+    # Run at 23:00 UTC (07:00 SGT next day)
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  generate-digest:
+    runs-on: ubuntu-latest
+    
+    env:
+      TZ: Asia/Singapore
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Run digest generator
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'gemini' }}
+        run: python main.py
+      
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "📰 Daily digest for ${{ env.DATE }}"
+          file_pattern: 'archives/*.md README.md'
+        env:
+          DATE: ${{ github.event.repository.updated_at || github.run_id }}
