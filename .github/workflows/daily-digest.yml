@@ -11,6 +11,10 @@ jobs:
   generate-digest:
     runs-on: ubuntu-latest
     
+    # Required for pushing changes back to the repository
+    permissions:
+      contents: write
+    
     env:
       TZ: Asia/Singapore
     
