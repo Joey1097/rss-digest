@@ -12,7 +12,7 @@ class Config:
     """Application configuration loaded from environment variables."""
     
     # LLM Settings
-    llm_provider: Literal["gemini", "deepseek"] = "gemini"
+    llm_provider: Literal["gemini", "deepseek"] = "deepseek"
     gemini_api_key: str = ""
     deepseek_api_key: str = ""
     
