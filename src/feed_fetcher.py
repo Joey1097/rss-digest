@@ -69,11 +69,26 @@ def _parse_entry(entry: dict, feed: Feed) -> Optional[Article]:
         # Get title
         title = entry.get("title", "Untitled")
         
-        # Parse publication date
+        # Parse publication date - SKIP articles without valid dates
         published = _parse_date(entry)
         if published is None:
-            # Use current time if no date available
-            published = datetime.now(timezone.utc)
+            # Skip articles without valid publication date
+            # This prevents old articles from being treated as new
+            return None
+        
+        # Sanity check: skip articles with unreasonable dates
+        now = datetime.now(timezone.utc)
+        one_year_ago = now - timedelta(days=365)
+        
+        # Skip if date is in the future (bad data)
+        if published > now + timedelta(hours=24):
+            logger.debug(f"Skipping article with future date: {title}")
+            return None
+        
+        # Skip if date is too old (likely missing/default date)
+        if published < one_year_ago:
+            logger.debug(f"Skipping article with very old date: {title}")
+            return None
         
         # Get summary (RSS native description)
         summary = ""
