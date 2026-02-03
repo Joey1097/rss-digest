@@ -29,6 +29,12 @@ class Config:
     archives_dir: str = "archives"
     readme_path: str = "README.md"
     
+    # Lark (Feishu) Settings
+    lark_app_id: str = ""
+    lark_app_secret: str = ""
+    lark_app_token: str = ""  # Bitable app token
+    lark_table_id: str = ""   # Bitable table ID
+    
     @classmethod
     def from_env(cls) -> "Config":
         """Load configuration from environment variables."""
@@ -43,6 +49,10 @@ class Config:
             opml_path=os.getenv("OPML_PATH", "feeds.opml"),
             archives_dir=os.getenv("ARCHIVES_DIR", "archives"),
             readme_path=os.getenv("README_PATH", "README.md"),
+            lark_app_id=os.getenv("LARK_APP_ID", ""),
+            lark_app_secret=os.getenv("LARK_APP_SECRET", ""),
+            lark_app_token=os.getenv("LARK_APP_TOKEN", ""),
+            lark_table_id=os.getenv("LARK_TABLE_ID", ""),
         )
     
     def validate(self) -> list[str]:

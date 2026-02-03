@@ -123,6 +123,16 @@ def main() -> int:
     logger.info("Step 8: Updating README...")
     update_readme(report_path, report_content)
     
+    # Step 9: Sync to Lark (optional)
+    if config.lark_app_token and config.lark_table_id:
+        logger.info("Step 9: Syncing to Lark...")
+        try:
+            from src.lark_sync import sync_summaries_to_lark
+            synced, skipped = sync_summaries_to_lark(summaries)
+            logger.info(f"  Synced: {synced}, Skipped (existing): {skipped}")
+        except Exception as e:
+            logger.error(f"Failed to sync to Lark: {e}")
+    
     # Done!
     logger.info("=" * 60)
     logger.info("Auto-RSS-Digest Completed Successfully!")
